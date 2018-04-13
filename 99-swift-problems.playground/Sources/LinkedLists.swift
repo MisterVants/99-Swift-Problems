@@ -8,8 +8,8 @@
 
 // IMMUTABLE
 public class List<T> {
-    var value: T
-    var nextItem: List<T>?
+    public var value: T
+    public var nextItem: List<T>?
     
     public convenience init?(_ values: T...) {
         self.init(Array(values))
@@ -96,58 +96,112 @@ extension List where T:Equatable {
     }
 }
 
-// DONT NEED TO USE GENERICS CAST
 //P07 (**) Flatten a nested linked list structure.
 extension List {
+
+    private var lastNode: List {
+        return nextItem?.lastNode ?? self
+    }
+
     public func flatten() -> List {
-        
-        var head : List?
-        var pointer = self as List?
-        
-        while let node = pointer {
-            if let val = value as? T {
-                let newNode = List(val)
-                head?.nextItem = newNode
-                head = newNode
-            } else if let val = value as? List<T> {
-                let flatList = val.flatten()
-                head?.nextItem = flatList
-            }
-            pointer = pointer?.nextItem
+        var newHead = List(self.value)!
+        var newTail = newHead
+        var iterator = self
+        if let listValue = newHead.value as? List {
+            newHead = listValue.flatten()
+            newTail = newHead.lastNode
         }
-        
-//        if let val = nextItem?.value as? List<T> {
-//            print("AAAAA")
-//        } else if let val = nextItem?.value as? T {
-//            print("BBBBB")
-//        }
-        
-        
-        //
-        //        var flatList = List(value)
-        //        var pointer = self as List<T>?
-        //        while let head = pointer {
-        //            pointer = head.nextItem
-        //        }
-        ////        repeat {
-        ////
-        ////        } while let aaa = nextItem// != nil
-        //
-        //        if let avalue = value as? List<T> {
-        //            return avalue.flatten()
-        //        }
-        //        return List(value)!
-        //        return List(T)!
-        return head!
+        while let next = iterator.nextItem {
+            if let listValue = next.value as? List {
+                newTail.nextItem = listValue.flatten()
+                newTail = newTail.lastNode
+            } else {
+                let node = List(next.value)!
+                newTail.nextItem = node
+                newTail = newTail.nextItem!
+            }
+            iterator = next
+        }
+        return newHead
     }
 }
-//let deep = List<Any>( List<Any>(1, 1)! , 2 , List<Any>(3, List<Any>(5, 8)!)! )!//.flatten().description
-//deep.flatten()
-//if let first = deep.nextItem!.value as? List<Any> {
-//    print("AAA")
-//}
 
-//deep.value is T.Type
+//P08 (**) Eliminate consecutive duplicates of linked list elements.
+extension List where T: Equatable {
+    public func compress() -> List {
+        let first = List(self.value)!
+        var last = first
+        var iterator = self
+        while let next = iterator.nextItem {
+            if next.value != last.value {
+                let newNode = List(next.value)!
+                last.nextItem = newNode
+                last = newNode
+            }
+            iterator = next
+        }
+        return first
+    }
+}
+
+//P09 (**) Pack consecutive duplicates of linked list elements into sub linked lists.
+extension List where T: Equatable {
+    public func pack() -> List<List<T>> {
+        
+        var iterator = self as List?
+        var packHead : List!
+        var packTail : List!
+        var result : List<List>!
+        var resultTail : List<List<T>>!
+        
+        while let value = iterator?.value {
+            let node = List(value)!
+            if value != packTail?.value {
+                packHead = node
+                packTail = packHead
+                if result == nil {
+                    result = List<List<T>>(packHead)!
+                    resultTail = result
+                } else {
+                    resultTail.nextItem = List<List<T>>(packHead)!
+                    resultTail = resultTail.nextItem!
+                }
+            } else {
+                packTail.nextItem = node
+                packTail = node
+            }
+            iterator = iterator?.nextItem
+        }
+        return result
+    }
+}
+
+//P10 (*) Run-length encoding of a linked list.
+extension List where T: Equatable {
+    public func encode() -> List<(Int, T)> {
+        var iterator = Optional.some(pack())
+        var resultHead : List<(Int,T)>!
+        var resultTail : List<(Int,T)>!
+        while let current = iterator {
+            let node = List<(Int,T)>((current.value.length,current.value.value))!
+            resultHead == nil ? (resultHead = node) : (resultTail.nextItem = node)
+            resultTail = node
+            iterator = iterator?.nextItem
+        }
+        return resultHead
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
