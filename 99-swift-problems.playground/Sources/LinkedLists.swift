@@ -116,11 +116,11 @@ extension List {
             pointer = pointer?.nextItem
         }
         
-        if let val = nextItem?.value as? List<T> {
-            print("AAAAA")
-        } else if let val = nextItem?.value as? T {
-            print("BBBBB")
-        }
+//        if let val = nextItem?.value as? List<T> {
+//            print("AAAAA")
+//        } else if let val = nextItem?.value as? T {
+//            print("BBBBB")
+//        }
         
         
         //
