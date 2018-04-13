@@ -37,10 +37,7 @@ TestData.multiElementList.length
 TestData.veryLongList.length
 
 // P05 - Reverse list
-let l = List(1, 1, 2, 3, 5, 8)!
-let rev = l.reverse()
-l.description
-rev.description
+List(1, 1, 2, 3, 5, 8)!.reverse().description
 
 // P06 - Palindrome
 List(1, 2, 3, 2, 1)!.isPalindrome()
@@ -48,9 +45,7 @@ TestData.multiElementList.isPalindrome()
 List(1)!.isPalindrome()
 
 // P07 - Flatten a nested list
-let deep = List<Any>( List<Any>(1, 1)! , 2 , List<Any>(3, List<Any>(5, 8)!)! )!//.flatten().description
-let flat = deep.flatten()
-flat.description
+List<Any>(List<Any>(1, 1)!, 2, List<Any>(3,List<Any>(5, 8)!)!)!.flatten().description
 
 // P08 - Eliminate consecutive duplicates
 let dup = List("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e")!
@@ -59,22 +54,32 @@ comp.description
 
 // P09 - Pack consecutive duplicates into new lists
 let duplicates = List("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e")!
-duplicates.description
 let pack = duplicates.pack()
-pack.description
+duplicates.description
 
 //P10 - Run-length encoding
-let encode = duplicates.encode()
-encode.description
+duplicates.encode().description
+
+// Issue open on github
+//P11 - Modified run-length
+List<Any>(List<Any>(4, "a")!, "b", List<Any>(2, "c")!, List<Any>(2, "a")!, "d", List<Any>(4, "e")!)!.description
+List<Any>((4, "a"), "b", (2, "c"), (2, "a"), "d", (4, "e"))!.description
+List<Any>((2, 1), 2, 3, 5, 8)!.description
+List(1, 1, 2, 3, 5, 8)!.encodeModified().description
+List<Any>((4, "a"))!.description
+duplicates.encodeModified().description
+
+//P12 - Decode run-length
+List((4, "a"), (1, "b"), (2, "c"), (2, "a"), (1, "d"), (4, "e"))!.decode().description
+
+//P13 - Direct run-length
 
 
+//P14 - Duplicate elements
+List("a", "b", "c", "c", "d")!.duplicate().description
 
-
-
-
-
-
-
+//P15 - Duplicate elements a number of times
+List("a", "b", "c", "c", "d")!.duplicate(3).description
 
 
 // Logical functions output

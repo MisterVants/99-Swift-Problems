@@ -24,14 +24,13 @@ public class List<T> {
     }
 }
 
-extension List {
+extension List: CustomStringConvertible {
     public var description: String {
         var buffer: [String] = []
-        var current: List? = self
-        //        buffer.append(String(describing: value))
-        while current != nil {
-            buffer.append(String(describing: current!.value))
-            current = current!.nextItem
+        var current = self as List?
+        while let value = current?.value {
+            buffer.append(String(describing: value))
+            current = current?.nextItem
         }
         return "[" + buffer.joined(separator: ", ") + "]"
     }
@@ -191,6 +190,82 @@ extension List where T: Equatable {
         return resultHead
     }
 }
+
+//P11 (*) Modified run-length encoding.
+extension List where T: Equatable {
+    public func encodeModified() -> List<Any> {
+        var iterator = Optional.some(pack())
+        var resultHead : List<Any>!
+        var resultTail : List<Any>!
+        while let current = iterator {
+            let length = current.value.length
+            let codedValue = length > 1 ? (length,current.value.value) as Any : current.value.value as Any
+            let node = List<Any>(codedValue)
+            resultHead == nil ? (resultHead = node) : (resultTail.nextItem = node)
+            resultTail = node
+            iterator = iterator?.nextItem
+        }
+        return resultHead
+    }
+}
+
+//P12 (**) Decode a run-length encoded linked list.
+extension List {
+    public func decode() -> List<String> {
+        var iterator = self as List?
+        var resultHead : List<String>!
+        var resultTail : List<String>!
+        while let value = iterator?.value as? (Int,String) {
+            for _ in 0..<value.0 {
+                let node = List<String>(value.1)!
+                resultHead == nil ? (resultHead = node) : (resultTail.nextItem = node)
+                resultTail = node
+            }
+            iterator = iterator?.nextItem
+        }
+        return resultHead
+    }
+}
+
+//P13 (**) Run-length encoding of a linked list (direct solution).
+
+
+//P14 (*) Duplicate the elements of a linked list.
+extension List {
+    public func duplicate() -> List {
+        var iterator = self as List?
+        var resultHead : List!
+        var resultTail : List!
+        while let value = iterator?.value {
+            for _ in 0...1 {
+                let node = List(value)!
+                resultHead == nil ? (resultHead = node) : (resultTail.nextItem = node)
+                resultTail = node
+            }
+            iterator = iterator?.nextItem
+        }
+        return resultHead
+    }
+}
+
+//P15 (**) Duplicate the elements of a linked list a given number of times.
+extension List {
+    public func duplicate(_ times: Int) -> List {
+        var iterator = self as List?
+        var resultHead : List!
+        var resultTail : List!
+        while let value = iterator?.value {
+            for _ in 0..<times {
+                let node = List(value)!
+                resultHead == nil ? (resultHead = node) : (resultTail.nextItem = node)
+                resultTail = node
+            }
+            iterator = iterator?.nextItem
+        }
+        return resultHead
+    }
+}
+
 
 
 
